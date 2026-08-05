@@ -3,7 +3,7 @@ import cors from "cors";
 
 import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
-
+import categoryRoutes from "./modules/category/category.routes.js";
 import globalErrorHandler from "./middleware/global-error.js";
 
 
@@ -32,6 +32,10 @@ app.use(
   userRoutes
 );
 
+app.use(
+  "/api/categories",
+  categoryRoutes
+);
 
 // Global error handler (must be last middleware)
 app.use(globalErrorHandler);
