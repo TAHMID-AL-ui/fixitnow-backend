@@ -6,6 +6,7 @@ import userRoutes from "./modules/user/user.routes.js";
 import categoryRoutes from "./modules/category/category.routes.js";
 import serviceRoutes from "./modules/service/service.routes.js";
 import technicianRoutes from "./modules/technician/technician.routes.js";
+import bookingRoutes from "./modules/booking/booking.routes.js";
 
 import globalErrorHandler from "./middleware/global-error.js";
 
@@ -60,6 +61,14 @@ app.use(
 app.use(
   "/api/technicians",
   technicianRoutes
+);
+
+
+
+// Booking routes
+app.use(
+  "/api/bookings",
+  bookingRoutes
 );
 
 
