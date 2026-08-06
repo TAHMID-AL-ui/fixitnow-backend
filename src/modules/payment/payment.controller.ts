@@ -16,7 +16,6 @@ import { sendResponse } from "../../utils/send-response.js";
 
 
 
-
 export const create = async (
   req: Request,
   res: Response,
@@ -42,11 +41,12 @@ export const create = async (
 
       success: true,
 
-      message: "Payment created successfully",
+      message: "Payment initialized successfully",
 
       data: result,
 
     });
+
 
 
   } catch (error) {
@@ -56,8 +56,6 @@ export const create = async (
   }
 
 };
-
-
 
 
 
@@ -76,9 +74,7 @@ export const getByBooking = async (
 
     const result =
       await getPaymentByBooking(
-
         req.params.bookingId as string
-
       );
 
 
@@ -102,7 +98,6 @@ export const getByBooking = async (
   }
 
 };
-
 
 
 
