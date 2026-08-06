@@ -1,6 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
-import { Prisma } from "@prisma/client";
 
 
 const globalErrorHandler = (
@@ -12,7 +11,10 @@ const globalErrorHandler = (
 
 
   let statusCode = err.statusCode || 500;
-  let message = err.message || "Something went wrong";
+
+  let message =
+    err.message || "Something went wrong";
+
   let errorDetails = {};
 
 
@@ -33,53 +35,7 @@ const globalErrorHandler = (
 
 
 
-  // Prisma known database errors
-  if (
-    err instanceof Prisma.PrismaClientKnownRequestError
-  ) {
-
-
-    switch (err.code) {
-
-
-      // Unique constraint violation
-      case "P2002":
-
-        statusCode = 409;
-
-        message =
-          "Duplicate record already exists";
-
-        break;
-
-
-
-      // Record not found
-      case "P2025":
-
-        statusCode = 404;
-
-        message =
-          "Requested record not found";
-
-        break;
-
-
-
-      default:
-
-        statusCode = 500;
-
-        message =
-          "Database operation failed";
-
-    }
-
-  }
-
-
-
-  // Hide internal errors in production
+  // Development error details
   if (statusCode === 500) {
 
     errorDetails =
