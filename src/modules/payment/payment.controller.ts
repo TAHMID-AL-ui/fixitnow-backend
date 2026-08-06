@@ -16,6 +16,7 @@ import { sendResponse } from "../../utils/send-response.js";
 
 
 
+
 export const create = async (
   req: Request,
   res: Response,
@@ -62,6 +63,8 @@ export const create = async (
 
 
 
+
+
 export const getByBooking = async (
   req: Request,
   res: Response,
@@ -73,7 +76,9 @@ export const getByBooking = async (
 
     const result =
       await getPaymentByBooking(
-        req.params.bookingId
+
+        req.params.bookingId as string
+
       );
 
 
@@ -105,6 +110,7 @@ export const getByBooking = async (
 
 
 
+
 export const updateStatus = async (
   req: Request,
   res: Response,
@@ -123,8 +129,11 @@ export const updateStatus = async (
 
     const result =
       await updatePaymentStatus(
-        req.params.bookingId,
+
+        req.params.bookingId as string,
+
         validatedData.status
+
       );
 
 

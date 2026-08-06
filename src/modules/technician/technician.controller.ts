@@ -28,24 +28,40 @@ export const create = async (
       createTechnicianValidation.parse(req.body);
 
 
+
     const result =
       await createTechnicianProfile(
+
         req.user!.id,
+
         validatedData
+
       );
 
 
+
     sendResponse(res, 201, {
+
       success: true,
+
       message: "Technician profile created successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -61,21 +77,35 @@ export const myProfile = async (
 
     const result =
       await getMyTechnicianProfile(
+
         req.user!.id
+
       );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Technician profile retrieved successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -89,28 +119,78 @@ export const update = async (
 
   try {
 
+
     const validatedData =
       updateTechnicianValidation.parse(req.body);
 
 
+
+    const updateData = {
+
+      ...(validatedData.skills && {
+
+        skills: validatedData.skills,
+
+      }),
+
+
+      ...(validatedData.experience && {
+
+        experience: validatedData.experience,
+
+      }),
+
+
+      ...(validatedData.location && {
+
+        location: validatedData.location,
+
+      }),
+
+
+      ...(validatedData.hourlyRate !== undefined && {
+
+        hourlyRate: validatedData.hourlyRate,
+
+      }),
+
+    };
+
+
+
     const result =
       await updateTechnicianProfile(
+
         req.user!.id,
-        validatedData
+
+        updateData
+
       );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Technician profile updated successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -128,14 +208,23 @@ export const getAll = async (
       await getAllTechnicians();
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Technicians retrieved successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };

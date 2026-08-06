@@ -33,6 +33,7 @@ export const create = async (
       createBookingValidation.parse(req.body);
 
 
+
     const result =
       await createBooking(
         req.user!.id,
@@ -40,17 +41,29 @@ export const create = async (
       );
 
 
+
     sendResponse(res, 201, {
+
       success: true,
+
       message: "Booking created successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -66,23 +79,36 @@ export const myBookings = async (
 
   try {
 
+
     const result =
       await getCustomerBookings(
         req.user!.id
       );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Bookings retrieved successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -101,18 +127,27 @@ export const technicianBookings = async (
 
     const technician =
       await prisma.technicianProfile.findUnique({
+
         where: {
+
           userId: req.user!.id,
+
         },
+
       });
 
 
 
     if (!technician) {
+
       throw new AppError(
+
         404,
+
         "Technician profile not found"
+
       );
+
     }
 
 
@@ -123,17 +158,29 @@ export const technicianBookings = async (
       );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Technician bookings retrieved successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -155,44 +202,70 @@ export const updateStatus = async (
 
 
 
+
     const technician =
       await prisma.technicianProfile.findUnique({
+
         where: {
+
           userId: req.user!.id,
+
         },
+
       });
 
 
 
     if (!technician) {
+
       throw new AppError(
+
         404,
+
         "Technician profile not found"
+
       );
+
     }
+
 
 
 
     const result =
       await updateBookingStatus(
-        req.params.id,
+
+        req.params.id as string,
+
         technician.id,
+
         validatedData.status
+
       );
 
 
 
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Booking status updated successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -211,19 +284,31 @@ export const cancel = async (
 
     const result =
       await cancelBooking(
-        req.params.id,
+
+        req.params.id as string,
+
         req.user!.id
+
       );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Booking cancelled successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };

@@ -15,6 +15,7 @@ import { sendResponse } from "../../utils/send-response.js";
 
 
 
+
 export const create = async (
   req: Request,
   res: Response,
@@ -30,8 +31,11 @@ export const create = async (
 
     const result =
       await createReview(
+
         req.user!.id,
+
         validatedData
+
       );
 
 
@@ -63,6 +67,7 @@ export const create = async (
 
 
 
+
 export const getByTechnician = async (
   req: Request,
   res: Response,
@@ -74,7 +79,9 @@ export const getByTechnician = async (
 
     const result =
       await getTechnicianReviews(
-        req.params.technicianId
+
+        req.params.technicianId as string
+
       );
 
 

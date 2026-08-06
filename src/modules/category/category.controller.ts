@@ -29,21 +29,42 @@ export const create = async (
       createCategoryValidation.parse(req.body);
 
 
+
     const result =
-      await createCategory(validatedData);
+      await createCategory({
+
+        name: validatedData.name,
+
+        ...(validatedData.description && {
+          description: validatedData.description,
+        }),
+
+      });
+
 
 
     sendResponse(res, 201, {
+
       success: true,
+
       message: "Category created successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -55,21 +76,34 @@ export const getAll = async (
 
   try {
 
+
     const result =
       await getAllCategories();
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Categories retrieved successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -81,23 +115,38 @@ export const getOne = async (
 
   try {
 
+
     const result =
       await getSingleCategory(
-        req.params.id
+
+        req.params.id as string
+
       );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Category retrieved successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -109,28 +158,55 @@ export const update = async (
 
   try {
 
+
     const validatedData =
       updateCategoryValidation.parse(req.body);
 
 
+
     const result =
       await updateCategory(
-        req.params.id,
-        validatedData
+
+        req.params.id as string,
+
+        {
+
+          ...(validatedData.name && {
+            name: validatedData.name,
+          }),
+
+          ...(validatedData.description && {
+            description: validatedData.description,
+          }),
+
+        }
+
       );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Category updated successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -142,19 +218,31 @@ export const remove = async (
 
   try {
 
+
     await deleteCategory(
-      req.params.id
+
+      req.params.id as string
+
     );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Category deleted successfully",
+
       data: null,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };

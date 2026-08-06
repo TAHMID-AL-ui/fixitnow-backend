@@ -31,21 +31,27 @@ export const create = async (
       createServiceValidation.parse(req.body);
 
 
-    // Find technician profile using logged-in user's ID
+
     const technician =
       await prisma.technicianProfile.findUnique({
+
         where: {
           userId: req.user!.id,
         },
+
       });
 
 
+
     if (!technician) {
+
       throw new AppError(
         404,
         "Technician profile not found"
       );
+
     }
+
 
 
     const result =
@@ -55,17 +61,29 @@ export const create = async (
       );
 
 
+
     sendResponse(res, 201, {
+
       success: true,
+
       message: "Service created successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -83,17 +101,29 @@ export const getAll = async (
       await getAllServices();
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Services retrieved successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -109,21 +139,35 @@ export const getOne = async (
 
     const result =
       await getSingleService(
-        req.params.id
+
+        req.params.id as string
+
       );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Service retrieved successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -141,41 +185,86 @@ export const update = async (
       updateServiceValidation.parse(req.body);
 
 
+
     const technician =
       await prisma.technicianProfile.findUnique({
+
         where: {
           userId: req.user!.id,
         },
+
       });
 
 
+
     if (!technician) {
+
       throw new AppError(
         404,
         "Technician profile not found"
       );
+
     }
+
+
+
+    const updateData = {
+
+      ...(validatedData.title && {
+        title: validatedData.title,
+      }),
+
+      ...(validatedData.description && {
+        description: validatedData.description,
+      }),
+
+      ...(validatedData.price !== undefined && {
+        price: validatedData.price,
+      }),
+
+      ...(validatedData.categoryId && {
+        categoryId: validatedData.categoryId,
+      }),
+
+    };
+
 
 
     const result =
       await updateService(
-        req.params.id,
+
+        req.params.id as string,
+
         technician.id,
-        validatedData
+
+        updateData
+
       );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Service updated successfully",
+
       data: result,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
+
+
+
 
 
 
@@ -189,36 +278,55 @@ export const remove = async (
 
   try {
 
+
     const technician =
       await prisma.technicianProfile.findUnique({
+
         where: {
           userId: req.user!.id,
         },
+
       });
 
 
+
     if (!technician) {
+
       throw new AppError(
         404,
         "Technician profile not found"
       );
+
     }
 
 
+
     await deleteService(
-      req.params.id,
+
+      req.params.id as string,
+
       technician.id
+
     );
 
 
+
     sendResponse(res, 200, {
+
       success: true,
+
       message: "Service deleted successfully",
+
       data: null,
+
     });
 
 
+
   } catch (error) {
+
     next(error);
+
   }
+
 };
