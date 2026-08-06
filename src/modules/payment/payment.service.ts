@@ -3,8 +3,6 @@ import AppError from "../../utils/app-error.js";
 import stripe from "../../lib/stripe.js";
 
 
-
-
 export const createPayment = async (
   customerId: string,
   data: {
@@ -12,7 +10,6 @@ export const createPayment = async (
     amount: number;
   }
 ) => {
-
 
   const booking =
     await prisma.booking.findUnique({
@@ -28,8 +25,6 @@ export const createPayment = async (
     });
 
 
-
-
   if (!booking) {
 
     throw new AppError(
@@ -38,8 +33,6 @@ export const createPayment = async (
     );
 
   }
-
-
 
 
   if (booking.customerId !== customerId) {
@@ -52,8 +45,6 @@ export const createPayment = async (
   }
 
 
-
-
   if (booking.status !== "COMPLETED") {
 
     throw new AppError(
@@ -62,8 +53,6 @@ export const createPayment = async (
     );
 
   }
-
-
 
 
   const existingPayment =
@@ -76,8 +65,6 @@ export const createPayment = async (
     });
 
 
-
-
   if (existingPayment) {
 
     throw new AppError(
@@ -86,8 +73,6 @@ export const createPayment = async (
     );
 
   }
-
-
 
 
   // Create real Stripe PaymentIntent
@@ -114,9 +99,6 @@ export const createPayment = async (
 
 
 
-
-
-
   const payment =
     await prisma.payment.create({
 
@@ -140,9 +122,6 @@ export const createPayment = async (
 
 
 
-
-
-
   return {
 
     payment,
@@ -156,9 +135,6 @@ export const createPayment = async (
   };
 
 };
-
-
-
 
 
 
@@ -195,7 +171,6 @@ export const getPaymentByBooking = async (
 
 
 
-
   if (!payment) {
 
     throw new AppError(
@@ -206,14 +181,9 @@ export const getPaymentByBooking = async (
   }
 
 
-
   return payment;
 
 };
-
-
-
-
 
 
 
@@ -238,7 +208,6 @@ export const updatePaymentStatus = async (
 
 
 
-
   if (!payment) {
 
     throw new AppError(
@@ -247,7 +216,6 @@ export const updatePaymentStatus = async (
     );
 
   }
-
 
 
 
@@ -274,7 +242,6 @@ export const updatePaymentStatus = async (
       },
 
     });
-
 
 
 
