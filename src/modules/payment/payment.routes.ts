@@ -4,7 +4,10 @@ import {
   create,
   getByBooking,
   updateStatus,
+  history,
+  details,
 } from "./payment.controller.js";
+
 
 import { authMiddleware } from "../../middleware/auth.js";
 import { authorizeRole } from "../../middleware/role.js";
@@ -13,8 +16,6 @@ import { authorizeRole } from "../../middleware/role.js";
 const router = Router();
 
 
-
-// Customer creates payment
 
 router.post(
   "/",
@@ -25,7 +26,26 @@ router.post(
 
 
 
-// Get payment details
+router.get(
+  "/",
+  authMiddleware,
+  authorizeRole("CUSTOMER"),
+  history
+);
+
+
+
+// Payment details by payment id
+
+router.get(
+  "/details/:id",
+  authMiddleware,
+  details
+);
+
+
+
+// Existing route kept
 
 router.get(
   "/:bookingId",
@@ -34,8 +54,6 @@ router.get(
 );
 
 
-
-// Update payment status
 
 router.patch(
   "/:bookingId/status",

@@ -3,6 +3,7 @@ import AppError from "../../utils/app-error.js";
 import stripe from "../../lib/stripe.js";
 
 
+
 export const createPayment = async (
   customerId: string,
   data: {
@@ -25,6 +26,7 @@ export const createPayment = async (
     });
 
 
+
   if (!booking) {
 
     throw new AppError(
@@ -33,6 +35,7 @@ export const createPayment = async (
     );
 
   }
+
 
 
   if (booking.customerId !== customerId) {
@@ -45,6 +48,7 @@ export const createPayment = async (
   }
 
 
+
   if (booking.status !== "COMPLETED") {
 
     throw new AppError(
@@ -53,6 +57,7 @@ export const createPayment = async (
     );
 
   }
+
 
 
   const existingPayment =
@@ -65,6 +70,7 @@ export const createPayment = async (
     });
 
 
+
   if (existingPayment) {
 
     throw new AppError(
@@ -75,7 +81,6 @@ export const createPayment = async (
   }
 
 
-  // Create real Stripe PaymentIntent
 
   const paymentIntent =
     await stripe.paymentIntents.create({
@@ -179,6 +184,115 @@ export const getPaymentByBooking = async (
     );
 
   }
+
+
+
+  return payment;
+
+};
+
+
+
+
+
+// NEW: Payment History
+
+export const getPaymentHistory = async (
+  customerId: string
+) => {
+
+
+  const payments =
+    await prisma.payment.findMany({
+
+      where: {
+
+        booking: {
+
+          customerId,
+
+        },
+
+      },
+
+
+      include: {
+
+        booking: {
+
+          include: {
+
+            service: true,
+
+          },
+
+        },
+
+      },
+
+
+      orderBy: {
+
+        createdAt: "desc",
+
+      },
+
+    });
+
+
+
+  return payments;
+
+};
+
+
+
+
+
+// NEW: Payment Details by Payment ID
+
+export const getPaymentDetails = async (
+  paymentId: string
+) => {
+
+
+  const payment =
+    await prisma.payment.findUnique({
+
+      where: {
+
+        id: paymentId,
+
+      },
+
+
+      include: {
+
+        booking: {
+
+          include: {
+
+            service: true,
+
+          },
+
+        },
+
+      },
+
+    });
+
+
+
+  if (!payment) {
+
+    throw new AppError(
+      404,
+      "Payment not found"
+    );
+
+  }
+
 
 
   return payment;

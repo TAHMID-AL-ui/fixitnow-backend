@@ -3,6 +3,8 @@ import type { Request, Response, NextFunction } from "express";
 import {
   createPayment,
   getPaymentByBooking,
+  getPaymentHistory,
+  getPaymentDetails,
   updatePaymentStatus,
 } from "./payment.service.js";
 
@@ -12,7 +14,6 @@ import {
 } from "./payment.validation.js";
 
 import { sendResponse } from "../../utils/send-response.js";
-
 
 
 
@@ -71,7 +72,6 @@ export const getByBooking = async (
 
   try {
 
-
     const result =
       await getPaymentByBooking(
         req.params.bookingId as string
@@ -105,6 +105,87 @@ export const getByBooking = async (
 
 
 
+export const history = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+
+  try {
+
+    const result =
+      await getPaymentHistory(
+        req.user!.id
+      );
+
+
+
+    sendResponse(res, 200, {
+
+      success: true,
+
+      message: "Payment history retrieved successfully",
+
+      data: result,
+
+    });
+
+
+
+  } catch (error) {
+
+    next(error);
+
+  }
+
+};
+
+
+
+
+
+
+
+export const details = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+
+  try {
+
+    const result =
+      await getPaymentDetails(
+        req.params.id as string
+      );
+
+
+
+    sendResponse(res, 200, {
+
+      success: true,
+
+      message: "Payment details retrieved successfully",
+
+      data: result,
+
+    });
+
+
+
+  } catch (error) {
+
+    next(error);
+
+  }
+
+};
+
+
+
+
+
+
 
 export const updateStatus = async (
   req: Request,
@@ -113,7 +194,6 @@ export const updateStatus = async (
 ) => {
 
   try {
-
 
     const validatedData =
       updatePaymentStatusValidation.parse(
