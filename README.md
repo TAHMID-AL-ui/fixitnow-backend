@@ -67,5 +67,4 @@ PENDING → COMPLETED
 
 Clone repository:
 
-```bash
-git clone <repository-url>
+https://github.com/TAHMID-AL-ui/fixitnow-backend.git

@@ -4,6 +4,7 @@ import {
   createBooking,
   getCustomerBookings,
   getTechnicianBookings,
+  getBookingDetails,
   updateBookingStatus,
   cancelBooking,
 } from "./booking.service.js";
@@ -16,8 +17,6 @@ import {
 import { sendResponse } from "../../utils/send-response.js";
 import prisma from "../../lib/prisma.js";
 import AppError from "../../utils/app-error.js";
-
-
 
 
 
@@ -68,9 +67,6 @@ export const create = async (
 
 
 
-
-
-
 export const myBookings = async (
   req: Request,
   res: Response,
@@ -78,7 +74,6 @@ export const myBookings = async (
 ) => {
 
   try {
-
 
     const result =
       await getCustomerBookings(
@@ -113,6 +108,44 @@ export const myBookings = async (
 
 
 
+export const bookingDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+
+  try {
+
+    const result =
+      await getBookingDetails(
+        req.params.id as string
+      );
+
+
+
+    sendResponse(res, 200, {
+
+      success: true,
+
+      message: "Booking details retrieved successfully",
+
+      data: result,
+
+    });
+
+
+
+  } catch (error) {
+
+    next(error);
+
+  }
+
+};
+
+
+
+
 
 
 
@@ -123,7 +156,6 @@ export const technicianBookings = async (
 ) => {
 
   try {
-
 
     const technician =
       await prisma.technicianProfile.findUnique({
@@ -185,9 +217,6 @@ export const technicianBookings = async (
 
 
 
-
-
-
 export const updateStatus = async (
   req: Request,
   res: Response,
@@ -196,10 +225,8 @@ export const updateStatus = async (
 
   try {
 
-
     const validatedData =
       updateBookingStatusValidation.parse(req.body);
-
 
 
 
@@ -227,7 +254,6 @@ export const updateStatus = async (
       );
 
     }
-
 
 
 
@@ -270,9 +296,6 @@ export const updateStatus = async (
 
 
 
-
-
-
 export const cancel = async (
   req: Request,
   res: Response,
@@ -280,7 +303,6 @@ export const cancel = async (
 ) => {
 
   try {
-
 
     const result =
       await cancelBooking(

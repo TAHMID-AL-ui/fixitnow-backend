@@ -2,6 +2,7 @@ import prisma from "../../lib/prisma.js";
 import AppError from "../../utils/app-error.js";
 
 
+// Create Booking
 
 export const createBooking = async (
   customerId: string,
@@ -12,21 +13,23 @@ export const createBooking = async (
   }
 ) => {
 
-
   const service =
     await prisma.service.findUnique({
+
       where: {
         id: data.serviceId,
       },
+
     });
 
 
-
   if (!service) {
+
     throw new AppError(
       404,
       "Service not found"
     );
+
   }
 
 
@@ -84,14 +87,13 @@ export const createBooking = async (
 
 
   return booking;
+
 };
 
 
 
 
-
-
-
+// Customer bookings
 
 export const getCustomerBookings = async (
   customerId: string
@@ -146,14 +148,92 @@ export const getCustomerBookings = async (
 
 
   return bookings;
+
 };
 
 
 
 
+// NEW: Booking Details
+
+export const getBookingDetails = async (
+  bookingId: string
+) => {
+
+
+  const booking =
+    await prisma.booking.findUnique({
+
+      where: {
+
+        id: bookingId,
+
+      },
+
+
+      include: {
+
+        service: true,
+
+
+        customer: {
+
+          select: {
+
+            id: true,
+            name: true,
+            email: true,
+
+          },
+
+        },
+
+
+        technician: {
+
+          include: {
+
+            user: {
+
+              select: {
+
+                id: true,
+                name: true,
+                email: true,
+
+              },
+
+            },
+
+          },
+
+        },
+
+      },
+
+    });
 
 
 
+  if (!booking) {
+
+    throw new AppError(
+      404,
+      "Booking not found"
+    );
+
+  }
+
+
+
+  return booking;
+
+};
+
+
+
+
+// Technician bookings
 
 export const getTechnicianBookings = async (
   technicianId: string
@@ -171,7 +251,6 @@ export const getTechnicianBookings = async (
 
 
       include: {
-
 
         service: true,
 
@@ -202,15 +281,13 @@ export const getTechnicianBookings = async (
 
 
   return bookings;
+
 };
 
 
 
 
-
-
-
-
+// Update Booking Status
 
 export const updateBookingStatus = async (
   bookingId: string,
@@ -248,9 +325,6 @@ export const updateBookingStatus = async (
 
 
 
-
-
-  // Ownership check
   if (booking.technicianId !== technicianId) {
 
     throw new AppError(
@@ -262,9 +336,6 @@ export const updateBookingStatus = async (
 
 
 
-
-
-  // Prevent updates after completion/cancellation
   if (
     booking.status === "COMPLETED" ||
     booking.status === "CANCELLED"
@@ -276,8 +347,6 @@ export const updateBookingStatus = async (
     );
 
   }
-
-
 
 
 
@@ -321,15 +390,13 @@ export const updateBookingStatus = async (
 
 
   return updatedBooking;
+
 };
 
 
 
 
-
-
-
-
+// Cancel Booking
 
 export const cancelBooking = async (
   bookingId: string,
@@ -361,9 +428,6 @@ export const cancelBooking = async (
 
 
 
-
-
-  // Ownership check
   if (booking.customerId !== customerId) {
 
     throw new AppError(
@@ -375,9 +439,6 @@ export const cancelBooking = async (
 
 
 
-
-
-  // Prevent cancellation after work starts
   if (
     booking.status === "IN_PROGRESS" ||
     booking.status === "COMPLETED"
@@ -389,8 +450,6 @@ export const cancelBooking = async (
     );
 
   }
-
-
 
 
 
@@ -415,4 +474,5 @@ export const cancelBooking = async (
 
 
   return updatedBooking;
+
 };

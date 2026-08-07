@@ -1,22 +1,28 @@
 import { Router } from "express";
 
+
 import {
   create,
   myBookings,
+  bookingDetails,
   technicianBookings,
   updateStatus,
   cancel,
 } from "./booking.controller.js";
 
+
 import { authMiddleware } from "../../middleware/auth.js";
 import { authorizeRole } from "../../middleware/role.js";
+
 
 
 const router = Router();
 
 
 
+
 // Customer routes
+
 
 router.post(
   "/",
@@ -26,12 +32,14 @@ router.post(
 );
 
 
+
 router.get(
   "/my",
   authMiddleware,
   authorizeRole("CUSTOMER"),
   myBookings
 );
+
 
 
 router.patch(
@@ -43,9 +51,21 @@ router.patch(
 
 
 
+// Booking details
+
+router.get(
+  "/:id",
+  authMiddleware,
+  bookingDetails
+);
+
+
+
+
 
 
 // Technician routes
+
 
 router.get(
   "/technician",
@@ -53,6 +73,7 @@ router.get(
   authorizeRole("TECHNICIAN"),
   technicianBookings
 );
+
 
 
 router.patch(
