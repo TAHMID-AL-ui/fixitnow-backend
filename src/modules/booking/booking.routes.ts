@@ -5,6 +5,7 @@ import {
   create,
   myBookings,
   bookingDetails,
+  allBookings,
   technicianBookings,
   updateStatus,
   cancel,
@@ -17,6 +18,7 @@ import { authorizeRole } from "../../middleware/role.js";
 
 
 const router = Router();
+
 
 
 
@@ -42,12 +44,29 @@ router.get(
 
 
 
+
+
 router.patch(
   "/:id/cancel",
   authMiddleware,
   authorizeRole("CUSTOMER"),
   cancel
 );
+
+
+
+
+
+// Admin route
+
+router.get(
+  "/",
+  authMiddleware,
+  authorizeRole("ADMIN"),
+  allBookings
+);
+
+
 
 
 
@@ -58,6 +77,7 @@ router.get(
   authMiddleware,
   bookingDetails
 );
+
 
 
 

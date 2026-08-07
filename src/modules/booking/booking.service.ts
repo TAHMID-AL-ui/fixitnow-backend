@@ -23,6 +23,7 @@ export const createBooking = async (
     });
 
 
+
   if (!service) {
 
     throw new AppError(
@@ -99,7 +100,6 @@ export const getCustomerBookings = async (
   customerId: string
 ) => {
 
-
   const bookings =
     await prisma.booking.findMany({
 
@@ -154,12 +154,11 @@ export const getCustomerBookings = async (
 
 
 
-// NEW: Booking Details
+// Booking Details
 
 export const getBookingDetails = async (
   bookingId: string
 ) => {
-
 
   const booking =
     await prisma.booking.findUnique({
@@ -233,12 +232,76 @@ export const getBookingDetails = async (
 
 
 
+// Admin: Get all bookings
+
+export const getAllBookings = async () => {
+
+  const bookings =
+    await prisma.booking.findMany({
+
+      include: {
+
+        service: true,
+
+
+        customer: {
+
+          select: {
+
+            id: true,
+            name: true,
+            email: true,
+
+          },
+
+        },
+
+
+        technician: {
+
+          include: {
+
+            user: {
+
+              select: {
+
+                id: true,
+                name: true,
+                email: true,
+
+              },
+
+            },
+
+          },
+
+        },
+
+      },
+
+
+      orderBy: {
+
+        createdAt: "desc",
+
+      },
+
+    });
+
+
+
+  return bookings;
+
+};
+
+
+
+
 // Technician bookings
 
 export const getTechnicianBookings = async (
   technicianId: string
 ) => {
-
 
   const bookings =
     await prisma.booking.findMany({
@@ -299,7 +362,6 @@ export const updateBookingStatus = async (
     | "COMPLETED"
     | "CANCELLED"
 ) => {
-
 
   const booking =
     await prisma.booking.findUnique({
@@ -402,7 +464,6 @@ export const cancelBooking = async (
   bookingId: string,
   customerId: string
 ) => {
-
 
   const booking =
     await prisma.booking.findUnique({

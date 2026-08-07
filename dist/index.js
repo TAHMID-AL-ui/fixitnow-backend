@@ -1330,6 +1330,70 @@ var getCustomerBookings = async (customerId) => {
   });
   return bookings;
 };
+var getBookingDetails = async (bookingId) => {
+  const booking = await prisma_default.booking.findUnique({
+    where: {
+      id: bookingId
+    },
+    include: {
+      service: true,
+      customer: {
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
+      },
+      technician: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        }
+      }
+    }
+  });
+  if (!booking) {
+    throw new app_error_default(
+      404,
+      "Booking not found"
+    );
+  }
+  return booking;
+};
+var getAllBookings = async () => {
+  const bookings = await prisma_default.booking.findMany({
+    include: {
+      service: true,
+      customer: {
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
+      },
+      technician: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        }
+      }
+    },
+    orderBy: {
+      createdAt: "desc"
+    }
+  });
+  return bookings;
+};
 var getTechnicianBookings = async (technicianId) => {
   const bookings = await prisma_default.booking.findMany({
     where: {
@@ -1477,6 +1541,32 @@ var myBookings = async (req, res, next) => {
     next(error);
   }
 };
+var bookingDetails = async (req, res, next) => {
+  try {
+    const result = await getBookingDetails(
+      req.params.id
+    );
+    sendResponse(res, 200, {
+      success: true,
+      message: "Booking details retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+var allBookings = async (req, res, next) => {
+  try {
+    const result = await getAllBookings();
+    sendResponse(res, 200, {
+      success: true,
+      message: "All bookings retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 var technicianBookings = async (req, res, next) => {
   try {
     const technician = await prisma_default.technicianProfile.findUnique({
@@ -1565,6 +1655,17 @@ router6.patch(
   authMiddleware,
   authorizeRole("CUSTOMER"),
   cancel
+);
+router6.get(
+  "/",
+  authMiddleware,
+  authorizeRole("ADMIN"),
+  allBookings
+);
+router6.get(
+  "/:id",
+  authMiddleware,
+  bookingDetails
 );
 router6.get(
   "/technician",
@@ -1672,6 +1773,47 @@ var getPaymentByBooking = async (bookingId) => {
   }
   return payment;
 };
+var getPaymentHistory = async (customerId) => {
+  const payments = await prisma_default.payment.findMany({
+    where: {
+      booking: {
+        customerId
+      }
+    },
+    include: {
+      booking: {
+        include: {
+          service: true
+        }
+      }
+    },
+    orderBy: {
+      createdAt: "desc"
+    }
+  });
+  return payments;
+};
+var getPaymentDetails = async (paymentId) => {
+  const payment = await prisma_default.payment.findUnique({
+    where: {
+      id: paymentId
+    },
+    include: {
+      booking: {
+        include: {
+          service: true
+        }
+      }
+    }
+  });
+  if (!payment) {
+    throw new app_error_default(
+      404,
+      "Payment not found"
+    );
+  }
+  return payment;
+};
 var updatePaymentStatus = async (bookingId, status) => {
   const payment = await prisma_default.payment.findUnique({
     where: {
@@ -1740,6 +1882,34 @@ var getByBooking = async (req, res, next) => {
     next(error);
   }
 };
+var history = async (req, res, next) => {
+  try {
+    const result = await getPaymentHistory(
+      req.user.id
+    );
+    sendResponse(res, 200, {
+      success: true,
+      message: "Payment history retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+var details = async (req, res, next) => {
+  try {
+    const result = await getPaymentDetails(
+      req.params.id
+    );
+    sendResponse(res, 200, {
+      success: true,
+      message: "Payment details retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 var updateStatus2 = async (req, res, next) => {
   try {
     const validatedData = updatePaymentStatusValidation.parse(
@@ -1766,6 +1936,17 @@ router7.post(
   authMiddleware,
   authorizeRole("CUSTOMER"),
   create5
+);
+router7.get(
+  "/",
+  authMiddleware,
+  authorizeRole("CUSTOMER"),
+  history
+);
+router7.get(
+  "/details/:id",
+  authMiddleware,
+  details
 );
 router7.get(
   "/:bookingId",
@@ -1993,19 +2174,9 @@ app.use(
 app.use(global_error_default);
 var app_default = app;
 
-// src/server.ts
-var PORT = 5e3;
-async function startServer() {
-  try {
-    await prisma_default.$connect();
-    app_default.listen(PORT, () => {
-      console.log(`FixItNow server running on port ${PORT}`);
-      console.log("Database connected successfully");
-    });
-  } catch (error) {
-    console.error("Database connection failed:", error);
-    process.exit(1);
-  }
-}
-startServer();
-//# sourceMappingURL=server.js.map
+// api/index.ts
+var index_default = app_default;
+export {
+  index_default as default
+};
+//# sourceMappingURL=index.js.map

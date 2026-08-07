@@ -5,6 +5,7 @@ import {
   getCustomerBookings,
   getTechnicianBookings,
   getBookingDetails,
+  getAllBookings,
   updateBookingStatus,
   cancelBooking,
 } from "./booking.service.js";
@@ -128,6 +129,47 @@ export const bookingDetails = async (
       success: true,
 
       message: "Booking details retrieved successfully",
+
+      data: result,
+
+    });
+
+
+
+  } catch (error) {
+
+    next(error);
+
+  }
+
+};
+
+
+
+
+
+
+
+// Admin: Get all bookings
+
+export const allBookings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+
+  try {
+
+    const result =
+      await getAllBookings();
+
+
+
+    sendResponse(res, 200, {
+
+      success: true,
+
+      message: "All bookings retrieved successfully",
 
       data: result,
 
